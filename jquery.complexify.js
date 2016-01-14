@@ -116,7 +116,8 @@
         minimumChars: 8,
         strengthScaleFactor: 1,
         bannedPasswords: window.COMPLEXIFY_BANLIST || [],
-        banMode: 'strict' // (strict|loose)
+        banMode: 'strict', // (strict|loose)
+        minValidComplexity: MIN_COMPLEXITY
       };
 
       if($.isFunction(options) && !callback) {
@@ -167,13 +168,13 @@
         // Use natural log to produce linear scale
         complexity = Math.log(Math.pow(complexity, password.length)) * (1/options.strengthScaleFactor);
 
-        valid = (complexity > MIN_COMPLEXITY && password.length >= options.minimumChars);
+        valid = (complexity > options.minValidComplexity && password.length >= options.minimumChars);
 
         // Scale to percentage, so it can be used for a progress bar
         complexity = (complexity / MAX_COMPLEXITY) * 100;
         complexity = (complexity > 100) ? 100 : complexity;
 
-        callback.call(this, valid, complexity);
+        callback.call(this, valid, complexity, password);
       }
 
       this.each(function () {
